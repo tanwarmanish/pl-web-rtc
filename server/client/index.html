@@ -9,17 +9,22 @@
 </head>
 
 <body>
-    <h1>Hello World</h1>
+    <h1 id="socket-state"></h1>
     <div class="connect-section">
-        <input placeholder="Name">
-        <button>Connect</button>
+        <input placeholder="Name" id="name" value="test">
+        <input placeholder="Room Id" id="roomId" value="1234">
+        <button id="create-room">Create</button>
+        <button id="join-room">Join</button>
+
     </div>
     <div class="container hide">
         <div class="user current-user">
             <video id="current-user-video" autoplay></video>
+            <p class="user-name" id="current-user-name"></p>
         </div>
         <div class="user other-user">
             <video id="other-user-video"></video>
+            <p class="user-name" id="other-user-name"></p>
         </div>
     </div>
 
