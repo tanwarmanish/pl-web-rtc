@@ -1,6 +1,10 @@
 let state = {
     id: null,
-    socket: null
+    socket: null,
+    candidates:[],
+    ready:false,
+    sent:false,
+    remoteAdded:false
 };
 
 export function updateValue(key,value){

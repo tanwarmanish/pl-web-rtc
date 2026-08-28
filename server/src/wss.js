@@ -18,8 +18,32 @@ function handleConnection(ws,req){
     ws.on('error',()=>console.log("Something went wrong..."));
 }
 
-function handlePeerMessage({name},message){
-    console.log(`${name} says: ${message}`);
+function handlePeerMessage({id},message){
+    message = JSON.parse(message);
+    switch(message.type){
+        case 'offer':{
+            const payload = {
+                type:'offer',
+                data:{
+                    ...message.data,
+                    senderId:id
+                }
+            };
+            sendToUser(message.data.userId,payload);
+            console.log("Offer communicated");
+            break;
+        }
+        case 'answer':{
+            sendToUser(message.data.userId,message);
+            console.log("Answer communicated");
+            break;
+        }
+        case 'candidates':{
+            sendToUser(message.data.userId,message);
+            console.log("HERE");
+            break;
+        }
+    }
 }
 
 function handlePeerDisconnect(params){
