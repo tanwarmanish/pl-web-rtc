@@ -1,13 +1,16 @@
 import { generateId, toQueryParams, toObj, toStr, $, loadTemplate } from './utils.js';
 import { Socket } from './socket.js';
+import { RTC } from './rtc.js';
 import { TYPE } from './const.js';
 
 
 export class State {
     ID = generateId(6);
     KEY;
+    ROOM_ID;
     sender = false;
     socket;
+    pc;
 
     constructor(isSender, KEY) {
         this.sender = isSender;
@@ -24,12 +27,22 @@ export class State {
         this[data.method](data);
     }
 
-    handleWS(data){
-        console.log("CONNECTED...",data);
+    handleWS(message) {
+        if (message.subtype == 'CONNECTED') {
+            this.ROOM_ID = message.data.roomId;
+            this.KEY = null;
+            console.log("ROOM ID",this.ROOM_ID);
+        }
     }
     
-    handleRTC(data){
-        console.log("RTC ",data);
+    handleRTC(message){
+        console.log("RTC ",message);
+        if(message.subtype=='PeerJoined'){
+            this.pc = new RTC(this);
+        }
+        else{
+            this.pc[message.subtype](message.data);
+        }
     }
 
     handleSocketClose() {
@@ -37,6 +50,7 @@ export class State {
     }
 
     send(message) {
+        console.log("MESSAGE",message);
         this.socket.send(toStr(message));
     }
 }

@@ -8,9 +8,10 @@ on($('#receive'),'click',sendReceiveClick);
 
 let state;
 
-function sendReceiveClick($event){
+function sendReceiveClick($event) {
     const isSender = $event.target.id == 'sender';
-    state = new State(isSender);
+    let key = isSender ? null : +($('#receive-key').value.trim() || '');
+    state = new State(isSender, key);
     state.initConnection();
     console.log("EVENt", $event.target.id);
     // state.send({id:124});

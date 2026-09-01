@@ -45,7 +45,6 @@ export function updateConnection(roomId, connection) {
 }
 
 export function joinRoom(roomId,userId,ws){
-    console.log()
     updateConnection(roomId, { [RECEIVER]: userId, [RECEIVER_SOCKET]: ws });
     const connection = Connections.get(roomId);
     return connection;
@@ -58,4 +57,31 @@ export function send(ws,type,data){
     };
     console.log(!!ws,toStr(payload));
     ws.send(toStr(payload));
+}
+
+export function broadcast(roomId,type,data){
+    toSender(roomId,type,data);
+    toReceiver(roomId,type,data);
+}
+
+
+export function forward(roomId, uid, type, data) {
+    const connection = Connections.get(roomId);
+    let ws = null;
+    if (connection[SENDER] == uid)
+        ws = connection[RECEIVER_SOCKET];
+    else if (connection[RECEIVER] == uid)
+        ws = connection[SENDER_SOCKET];
+    if (!ws) return;
+    send(ws, type, data);
+}
+
+export function toSender(roomId,type,data){
+    const connection = Connections.get(roomId);
+    send(connection[SENDER_SOCKET],type,data);
+}
+
+export function toReceiver(roomId, type, data) {
+    const connection = Connections.get(roomId);
+    send(connection[RECEIVER_SOCKET], type, data);
 }

@@ -1,7 +1,7 @@
-import { Connections, updateConnection,joinRoom, generateRoomId, isRoomValid, send } from './state.js';
+import { Connections, updateConnection, joinRoom, generateRoomId, isRoomValid, send, forward,broadcast } from './state.js';
 import { WebSocketServer } from 'ws';
 import { extractQueryParam, toObj, toStr } from './utils.js';
-import { SENDER_SOCKET,RECEIVER_SOCKET, TYPE, SENDER, RECEIVER } from './const.js';
+import { SENDER_SOCKET, RECEIVER_SOCKET, TYPE, SENDER, RECEIVER } from './const.js';
 
 let WSS = null;
 
@@ -17,34 +17,30 @@ function handleConnection(ws, req) {
     if (id && key) {
         const isValid = isRoomValid(roomId);
         if (!isValid) return closeConnection(ws);
+        send(ws, 'WS:CONNECTED', { roomId });
+        joinRoom(roomId,id,ws);
+        broadcast(roomId,'RTC:PeerJoined',null);
     }
     else if (id) {
         roomId = generateRoomId(id, ws);
         if (!roomId) return closeConnection(ws);
+        send(ws, 'WS:CONNECTED', { roomId });
     }
     else {
         closeConnection(ws);
     }
 
-    const connection = joinRoom(roomId, id, ws);
-    send(connection[SENDER_SOCKET], 'WS:CONNECTED', null);
-
-    ws.on('message', (data) => {
-        console.log("SOCKET MESSAGE", data);
+    ws.on('message', (message) => {
+        const {type,data} = toObj(message);
+        forward(data.roomId,data.id,type,data);
     });
+    
     ws.on('close', () => {
         console.log("Connection closed");
     })
-    // console.log(params,params.type,TYPE.CREATE);
-    // switch(params.type){
-    //     case TYPE.CREATE:
-    //         return createConnection(ws,params.data);
-    //     case TYPE.JOIN:
-    //         return joinConnection(ws,params.data);
-    // }
 }
 
-function closeConnection(ws){
+function closeConnection(ws) {
     console.log("CLOSED CONNECTION");
 }
 
