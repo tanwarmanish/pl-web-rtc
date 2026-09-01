@@ -1,5 +1,5 @@
 import { SENDER, RECEIVER, SENDER_SOCKET, RECEIVER_SOCKET } from './const.js';
-import { toStr, toObj, copy } from './utils.js';
+import { toStr } from './utils.js';
 
 export const Connections = new Map();
 
@@ -55,7 +55,6 @@ export function send(ws,type,data){
         type,
         data
     };
-    console.log(!!ws,toStr(payload));
     ws.send(toStr(payload));
 }
 

@@ -1,7 +1,6 @@
 
 
-import { toObj, toQueryParams, toStr } from './utils.js';
-import { TYPE } from './const.js'
+import { toObj, toQueryParams } from './utils.js';
 
 export class Socket {
     socket = null;
@@ -27,6 +26,10 @@ export class Socket {
         const [type, subtype] = data.type.split(':');
         const method = 'handle' + type;
         messageCallback({ ...data, type, subtype, method })
+    }
+
+    close(){
+        this.socket.close();
     }
 
 }

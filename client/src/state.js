@@ -1,7 +1,6 @@
-import { generateId, toQueryParams, toObj, toStr, $, loadTemplate } from './utils.js';
+import { generateId, toStr, $ } from './utils.js';
 import { Socket } from './socket.js';
 import { RTC } from './rtc.js';
-import { TYPE } from './const.js';
 
 
 export class State {
@@ -53,41 +52,21 @@ export class State {
         console.log("MESSAGE",message);
         this.socket.send(toStr(message));
     }
+
+    sendViaChannel(message){
+        const template = `<div class="card">
+            <div class="card-subtitle sender-name">Sent :</div>
+            <div class="title message-text">${message}</div>
+        </div>`;
+        const messageNode = document.createElement('div');
+        messageNode.innerHTML = template;
+        $('.message-container').appendChild(messageNode);
+        this.pc.channel.send(message);
+    }
+
+    closeSocket() {
+        setTimeout(() => {
+            this.socket.close();
+        });
+    }
 }
-
-
-
-// updateRoomSecret(key){
-//     this.roomId = +key.slice(0,4);
-//     this.secret = +key.slice(4,);
-// }
-
-// roomCreated({ roomId }) {
-//     this.roomId = roomId;
-//     const key = this.connectionKey();
-//     loadTemplate(DOM.SenderPortal,DOM.SenderTemplate1);
-//     document.querySelectorAll('.key-value').forEach((item,index) => (item.innerText = key[index]));
-//     loadTemplate(DOM.ReceivePortal);
-// }
-
-// connectionKey() {
-//     return `${this.roomId}${this.secret}`;
-// }
-
-// roomJoined(data){
-//     console.log("Room Joined");
-// }
-
-// validateKey({key}) {
-//     if(this.secret!=key)
-//         return this.socket.keyIsInvalid();
-//     console.log("KEY VALId, GEnerate OFFER", key);
-// }
-
-// acceptOffer(){
-//     console.log("ACCEPT OFFER");
-// }
-
-// acceptAnswer(){
-//     console.log("ACCEPT ANSWER");
-// }

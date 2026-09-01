@@ -17,6 +17,13 @@ function sendReceiveClick($event) {
     // state.send({id:124});
 }
 
+on($('#send-message'),'click',()=>{
+    const message = $('#message-input').value.trim();
+    if(!message) return;
+    state.sendViaChannel(message);
+    $('#message-input').value = '';
+});
+
 
 // main();
 

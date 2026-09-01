@@ -1,3 +1,5 @@
+import { $ } from './utils.js';
+
 export class RTC {
     pc;
     state;
@@ -108,13 +110,21 @@ export class RTC {
 
     registerChannelListeners() {
         this.channel.addEventListener('open', (e) => {
+            this.state.closeSocket();
             console.log("CHANNEL OPEN");
         });
         this.channel.addEventListener('close', (e) => {
             console.log("CHANNEL Closed");
         });
         this.channel.addEventListener('message', (e) => {
-            console.log("Channel Message", e);
+            const message = e.data;
+            const template = `<div class="card">
+                        <div class="card-subtitle sender-name">Received :</div>
+                        <div class="title message-text">${message}</div>
+                    </div>`;
+            const messageNode = document.createElement('div');
+            messageNode.innerHTML = template;
+            $('.message-container').appendChild(messageNode);
         })
     }
 }
