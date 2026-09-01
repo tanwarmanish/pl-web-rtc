@@ -30,12 +30,10 @@ export class State {
         if (message.subtype == 'CONNECTED') {
             this.ROOM_ID = message.data.roomId;
             this.KEY = null;
-            console.log("ROOM ID",this.ROOM_ID);
         }
     }
     
     handleRTC(message){
-        console.log("RTC ",message);
         if(message.subtype=='PeerJoined'){
             this.pc = new RTC(this);
         }
@@ -49,7 +47,6 @@ export class State {
     }
 
     send(message) {
-        console.log("MESSAGE",message);
         this.socket.send(toStr(message));
     }
 

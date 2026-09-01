@@ -111,7 +111,7 @@ export class RTC {
     registerChannelListeners() {
         this.channel.addEventListener('open', (e) => {
             this.state.closeSocket();
-            console.log("CHANNEL OPEN");
+            console.log("Connected...");
         });
         this.channel.addEventListener('close', (e) => {
             console.log("CHANNEL Closed");
